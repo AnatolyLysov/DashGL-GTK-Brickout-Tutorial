@@ -1,0 +1,154 @@
+Below is an explanation and example of how to resolve the error message:
+
+---
+
+### Understanding the Issue
+
+When you see the error:
+
+> fix #include errors detected. Please update your includePath. Squiggles are disabled for this translation unit (/home/aikidance/DashGL-GTK-Brickout-Tutorial/01_Open_a_Window/main.c)
+
+It means that Visual Studio Code’s C/C++ extension cannot locate the header files your source code is trying to include. As a result, IntelliSense shows squiggles (error markers) because it can’t find the declared headers.
+
+---
+
+### How to Fix It
+
+1. **Locate or Create the Configuration File:**
+
+   - Open your project in Visual Studio Code.
+   - Navigate to the `.vscode` folder in your project directory.
+   - Look for a file named `c_cpp_properties.json`. If it doesn’t exist, you can generate one:
+     - Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS) to open the Command Palette.
+     - Type and select **C/C++: Edit Configurations (UI)**.
+     - Save the generated configuration file.
+
+2. **Update the Include Path:**
+
+   Edit the `c_cpp_properties.json` file to include the directories where your header files reside. For example, on Linux systems, you might need to add standard system include directories like `/usr/include` and `/usr/local/include`. An example configuration might look like this:
+
+   ```json
+   {
+     "configurations": [
+       {
+         "name": "Linux",
+         "includePath": [
+           "${workspaceFolder}/**",
+           "/usr/include",
+           "/usr/local/include"
+         ],
+         "defines": [],
+         "compilerPath": "/usr/bin/gcc",
+         "cStandard": "c11",
+         "cppStandard": "c++17",
+         "intelliSenseMode": "gcc-x64"
+       }
+     ],
+     "version": 4
+   }
+   ```
+
+   **Notes:**
+   - Replace `/usr/bin/gcc` with the path to your compiler if it’s different.
+   - Adjust the standards (`"cStandard"` and `"cppStandard"`) according to your project requirements.
+   - If you have any additional include directories (custom or third-party libraries), add them to the `"includePath"` list.
+
+3. **Save and Restart:**
+
+   - Save your changes.
+   - Restart Visual Studio Code (or reload the window by pressing `Ctrl+Shift+P` or `Cmd+Shift+P`, then type and select **Reload Window**) to ensure that the new configuration is applied.
+
+4. **Verify the Fix:**
+
+   - Open your source file (e.g., `main.c`).
+   - Check whether the error squiggles for the `#include` lines have disappeared.
+   - If errors persist, verify that the paths in `c_cpp_properties.json` accurately point to the directories containing your header files.
+
+---
+
+Following these steps should resolve the include path error and enable IntelliSense to correctly find header files in your project.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Below is a step-by-step guide to resolve the error:
+
+---
+### Understanding the Error
+
+The message:  
+"cannot open source file 'glibconfig.h' (dependency of 'gtk/gtk.h')"  
+indicates that the compiler (or IntelliSense) cannot locate the header file glibconfig.h, which is needed by gtk/gtk.h. This file is usually provided as part of the GTK development package and its dependencies (like GLib).
+
+---
+
+### Steps to Fix the Issue
+
+#### 1. Verify GTK and Its Development Dependencies Are Installed
+Make sure you have the GTK development libraries installed. For example, on Ubuntu or Debian-based distributions, run:
+
+```bash
+sudo apt-get update
+sudo apt-get install libgtk-3-dev
+```
+
+This package typically includes not only GTK but also its dependencies such as glib.
+
+#### 2. Locate the Include Directories
+Find where glibconfig.h is located. On many systems, it might be in a path like:
+
+- `/usr/include/gtk-3.0/`
+- `/usr/lib/x86_64-linux-gnu/gtk-3.0/include/`
+
+You can use the `find` or `locate` command, for example:
+
+```bash
+sudo updatedb
+locate glibconfig.h
+```
+
+Take note of the directory paths that contain this header file.
+
+#### 3. Update Your Include Paths in Visual Studio Code
+
+Your IntelliSense configuration needs to know where to find the GTK and GLib header files. Open (or create) the `.vscode/c_cpp_properties.json` file in your project and update the `"includePath"` setting. For example:
+
+```json
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/include",
+                "/usr/include/gtk-3.0",
+                "/usr/lib/x86_64-linux-gnu/gtk-3.0/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}
+```
+
+**Notes:**
+
+- Adjust the paths if your system uses a different location.
+- If you are using a different compiler (like clang), update the `"compilerPath"` and `"intelliSenseMode"` accordingly.
+- Adding `"${workspaceFolder}/**"` ensures that your project files are recursively scanned for headers.
+
+#### 4. Save and Reload
+
+- Save the changes in `c_cpp_properties.json`.
+- Reload Visual Studio Code to ensure the new configuration is applied (`Ctrl+Shift+P` then type “Reload Window” and select it).
+
+#### 5. Verify the Fix
+
+- Open your source file (e.g., `main.c`) in VS Code.
+- Confirm that the error message regarding `glibconfig.h` has disappeared.
+- If you still see the error, double-check the location of glibconfig.h using the `locate` command and adjust the paths accordingly.
+
+---
+
+By ensuring that GTK and its development files are installed and updating your include paths, IntelliSense (and your compiler) will be able to locate glibconfig.h correctly.
