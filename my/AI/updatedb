@@ -6,7 +6,7 @@ Here's how to fix it:
 
 For Debian/Ubuntu-based systems:
 ```bash
-sudo apt-get update
+sudo sudo apt update
 sudo apt-get install mlocate
 ```
 
