@@ -152,3 +152,130 @@ Your IntelliSense configuration needs to know where to find the GTK and GLib hea
 ---
 
 By ensuring that GTK and its development files are installed and updating your include paths, IntelliSense (and your compiler) will be able to locate glibconfig.h correctly.
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Below are several methods to locate glibconfig.h on your system:
+
+### 1. Using pkg-config
+
+If you have GLib installed and pkg-config is available, you can run:
+
+```sh
+pkg-config --cflags glib-2.0
+```
+
+This command will output the compiler flags, including the directory where the GLib headers (and glibconfig.h) are located. Look for an include path (e.g., -I/usr/include/glib-2.0) and then check within that directory or its subdirectories for glibconfig.h.
+
+### 2. Using the find Command
+
+You can search your filesystem for glibconfig.h. For example:
+
+```sh
+find /usr -name glibconfig.h 2>/dev/null
+```
+
+This command searches within the /usr directory (adjust if necessary) and suppresses permission errors.
+
+### 3. Common Locations
+
+On many systems, especially Linux distributions, glibconfig.h is typically located in:
+
+- /usr/lib/glib-2.0/include
+- /usr/include/glib-2.0
+
+Check these directories if the above methods don't immediately reveal the file.
+
+### 4. When Building GLib from Source
+
+If you are building GLib yourself from its source, note that glibconfig.h is usually generated during the configuration process (for example, by running the configure script). It may reside in a build-specific subdirectory, so check the build directory for the generated header file.
+
+By following one of these methods, you should be able to locate glibconfig.h on your system.
+////////////////////////////////////////////////////////////////////////////////////
+pkg-config --cflags glib-2/0
+
+-I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////
+10
+
+I executed commands in the terminal and there are outputs shown in the terminal. I want to select all the screen shown. How to achieve that ?
+There are 2 options,
+
+Either you can copy-paste the selected text using Ctrl + Shift + C and Ctrl + Shift + V in which you have freedom what things to copy OR
+
+Redirect the text to a file using redirection
+
+program1 >outputfile.txt 2>errorfile.txt
+
+here, all the stdout will go to outputfile.txt while all the stderr will go to errorfile.txt.
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+If you are building GLib yourself from its source, note that glibconfig.h is usually generated during the configuration process (for example, by running the configure script). It may reside in a build-specific subdirectory, so check the build directory for the generated header file.
+
+By following one of these methods, you should be able to locate glibconfig.h on your system.^C
+aikidance@aikidance:~/DashGL-GTK-Brickout-Tutorial$ Below are several methods to locate glibconfig.h on your system:
+
+### 1. Using pkg-config
+
+If you have GLib installed and pkg-config is available, you can run:
+
+```sh
+pkg-config --cflags glib-2.0
+```
+
+This command will output the compiler flags, including the directory where the GLib headers (and glibconfig.h) are located. Look for an include path (e.g., -I/usr/include/glib-2.0) and then check within that directory or its subdirectories for glibconfig.h.
+
+### 2. Using the find Command
+
+You can search your filesystem for glibconfig.h. For example:
+
+```sh
+find /usr -name glibconfig.h 2>/dev/null
+```
+
+This command searches within the /usr directory (adjust if necessary) and suppresses permission errors.
+
+### 3. Common Locations
+
+On many systems, especially Linux distributions, glibconfig.h is typically located in:
+
+- /usr/lib/glib-2.0/include
+- /usr/include/glib-2.0
+
+Check these directories if the above methods don't immediately reveal the file.
+
+### 4. When Building GLib from Source
+
+If you are building GLib yourself from its source, note that glibconfig.h is usually generated during the configuration process (for example, by running the configure script). It may reside in a build-specific subdirectory, so check the build directory for the generated header file.
+
+By following one of these methods, you should be able to locate glibconfig.h on your system.^C
+aikidance@aikidance:~/DashGL-GTK-Brickout-Tutorial$ pkg-config --cflags glib-2.0
+-I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include 
+aikidance@aikidance:~/DashGL-GTK-Brickout-Tutorial$ 
+/////////////////////////////////////////////////////////////////////
+cpp_properties.json
+
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/include/gtk-3.0",
+                "/usr/include",
+                "/usr/local/include",
+                "/usr/include/glib-2.0",
+                "/usr/lib/x86_64-linux-gnu/glib-2.0/include"                
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "c++98",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}
+////////////////////////////////////////////////////////////////////////////////
