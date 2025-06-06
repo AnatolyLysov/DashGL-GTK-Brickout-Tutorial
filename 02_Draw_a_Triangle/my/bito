@@ -1,0 +1,635 @@
+To use the GTK library correctly, you should include its header file with the complete path. Instead of:
+
+```c
+#include <gtk>
+```
+
+Use:
+
+```c
+#include <gtk/gtk.h>
+```
+
+This change points to the proper header file that contains all the necessary declarations for GTK.
+//////////////////////////////////////////////////////
+If you're experiencing issues with the include directive
+
+```c
+#include <gtk/gtk.h>
+```
+
+it's likely not the include itself but rather how you're compiling your code or setting up your development environment. Here are a few things to check and fix:
+
+1. **Ensure GTK is Installed:**  
+   Make sure that GTK (e.g., GTK+ 3 or GTK+ 4) is installed on your system. On many Linux distributions you can install GTK using your package manager. For example, on Ubuntu for GTK+ 3 you might run:  
+   - Ubuntu/Debian:  
+     sudo apt-get install libgtk-3-dev  
+   - Fedora:  
+     sudo dnf install gtk3-devel
+
+2. **Use pkg-config to Compile:**  
+   The include works correctly when the compiler knows where to find the GTK header files. This is typically done via pkg-config. When compiling your code, use the output of pkg-config to supply the necessary compiler flags. For GTK+ 3, compile like this:  
+   
+   gcc your_program.c -o your_program $(pkg-config --cflags --libs gtk+-3.0)  
+   
+   For GTK+ 4, adjust accordingly:  
+   
+   gcc your_program.c -o your_program $(pkg-config --cflags --libs gtk4)
+
+3. **Check for Version-Specific Issues:**  
+   Ensure that you're referring to the correct version of GTK. For GTK+ 2, you’d use pkg-config --cflags --libs gtk+-2.0, although most modern code uses GTK+ 3 or GTK+ 4.
+
+If after following these steps you still encounter errors, please provide the specific error message. That additional information will help diagnose any lingering issues.
+
+In summary, the include directive itself is correct; ensure your development environment and build commands are set up properly to use GTK.
+///////////////////////////////////////////////////////////////////
+```c
+/*
+ * Summary: This C program uses the GTK+ library to create a simple graphical window 
+ * with the title "Brickout Tutorial". It initializes GTK, creates a new window, sets various 
+ * properties such as title, position, default size, and type hint, and finally displays the window. 
+ * The program connects the destroy signal to allow for graceful exit when the window is closed.
+ */
+
+#include <gtk/gtk.h>
+//#include <gtk/gtk.h>
+int main(int argc, char *argv[]) {
+	GtkWidget *window;
+	gtk_init(&argc, &argv);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title(GTK_WINDOW(window), "Brickout Tutorial");
+	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	gtk_window_set_default_size(GTK_WINDOW(window), 640, 480);
+	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_UTILITY);
+	g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	gtk_widget_show_all(window);
+	gtk_main();
+	return 0;
+}
+```
+////////////////////////////////////////////////
+```c
+/*
+ * Summary: This C program uses the GTK+ library to create a simple graphical window 
+ * with the title "Brickout Tutorial". It initializes GTK, creates a new window, sets various 
+ * properties such as title, position, default size, and type hint, and finally displays the window. 
+ * The program connects the destroy signal to allow for graceful exit when the window is closed.
+ */
+
+#include <gtk/gtk.h>
+//#include <gtk/gtk.h>
+int main(int argc, char *argv[]) {
+	GtkWidget *window;
+	gtk_init(&argc, &argv);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title(GTK_WINDOW(window), "Brickout Tutorial");
+	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	gtk_window_set_default_size(GTK_WINDOW(window), 640, 480);
+	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_UTILITY);
+	g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	gtk_widget_show_all(window);
+	gtk_main();
+	return 0;
+}
+```
+/////////////////////////////////////////////////////
+# Summary
+
+This C program utilizes the GTK+ library to create and display a simple graphical window titled "Brickout Tutorial". It initializes the GTK environment, creates a top-level window, configures its title, position, size, and type hint, and sets up a callback to gracefully exit the program when the window is closed.
+
+# Step-by-Step Explanation
+
+1. **Include the GTK Header:**
+   - The code starts by including the GTK header file (`#include <gtk/gtk.h>`) which provides the necessary functions and definitions for GTK operations.
+
+2. **Main Function:**
+   - The `main` function serves as the entry point for the program, where command-line arguments (`argc` and `argv`) are used by the GTK initialization function.
+
+3. **Initialize GTK:**
+   - `gtk_init(&argc, &argv);`
+     - This function initializes the GTK library and parses any command-line arguments intended for GTK. It prepares the environment necessary for creating and managing the graphical user interface.
+
+4. **Create a New Window:**
+   - `window = gtk_window_new(GTK_WINDOW_TOPLEVEL);`
+     - A new top-level window is created. A top-level window is a primary window that acts as the main container for the application’s widgets.
+
+5. **Set Window Title:**
+   - `gtk_window_set_title(GTK_WINDOW(window), "Brickout Tutorial");`
+     - This function sets the title of the window to "Brickout Tutorial". The title is typically displayed in the title bar of the window.
+
+6. **Set Window Position:**
+   - `gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);`
+     - This command positions the window in the center of the screen when it appears.
+
+7. **Set Default Window Size:**
+   - `gtk_window_set_default_size(GTK_WINDOW(window), 640, 480);`
+     - It sets the initial size of the window to 640 pixels in width and 480 pixels in height.
+
+8. **Set Window Type Hint:**
+   - `gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_UTILITY);`
+     - The type hint informs the window manager that the window is a utility window, which may have different behavior or appearance compared to standard application windows.
+
+9. **Connect the Destroy Signal:**
+   - `g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);`
+     - This connects the "destroy" signal to the `gtk_main_quit` function. When the window is closed (destroyed), the GTK main loop is instructed to exit, ensuring a graceful termination of the application.
+
+10. **Display the Window:**
+    - `gtk_widget_show_all(window);`
+      - This function makes the window and all of its child widgets visible. It is essential to call this function after setting up the window, so the user can see the graphical interface.
+
+11. **Enter the GTK Main Loop:**
+    - `gtk_main();`
+      - This function enters the GTK main loop, which is an event-driven loop that waits for events (like key presses, mouse clicks, etc.) and dispatches them to the appropriate handlers. The program remains in this loop until a termination signal (like closing the window) is received.
+
+12. **Return from Main:**
+    - `return 0;`
+      - Finally, the program returns 0, indicating successful execution.
+
+This step-by-step breakdown explains how the program establishes a basic GTK window and handles window events for a simple graphical application.
+/////////////////////////////////////////////////////////////
+GTK (GIMP Toolkit) is an open-source, cross-platform widget toolkit primarily used for developing graphical user interfaces (GUIs). It provides a set of tools for creating windows, buttons, text boxes, and other interface components, making it easier for developers to build feature-rich desktop applications. Initially developed for the GNU Image Manipulation Program (GIMP), GTK has grown popular for creating applications on Linux and other systems, and it supports multiple programming languages through various bindings.
+/////////////////////////////////////////////
+GTK API is a robust set of functions and tools for creating graphical user interfaces (GUIs). Here’s a brief overview:
+
+- **Widget Toolkit:** Provides a range of customizable widgets (buttons, labels, text boxes, etc.) that developers use to build complex interfaces.
+- **Event-Driven Programming:** Uses a signal and callback system where application behavior is defined by responding to user events (clicks, key presses, etc.).
+- **Cross-Platform:** Although originally designed for Linux, GTK supports multiple operating systems such as Windows and macOS.
+- **Language Bindings:** Primarily written in C, GTK offers bindings for various programming languages (like Python, C++, and JavaScript), allowing broader use.
+- **Theming and Accessibility:** Supports theming for customizing interface appearances and includes accessibility features to ensure applications are usable by everyone.
+
+In summary, the GTK API is designed to simplify the process of building powerful, interactive GUIs across different platforms.
+////////////////////////////////////////////////////////////
+# Code Summary
+
+This code creates a GTK window with an area for OpenGL rendering. In that area, it sets up a simple OpenGL scene to draw a blue triangle on a white background. This involves initializing GTK and an OpenGL context, creating the necessary vertex data (a single triangle), compiling shaders (vertex and fragment shaders), and finally rendering the triangle when required.
+
+# Step-by-Step Explanation
+
+## 1. Main Function Setup
+
+- **GTK Initialization and Window Creation**
+  - The program starts by calling `gtk_init(&argc, &argv)` to initialize the GTK library.
+  - A new window is created using `gtk_window_new(GTK_WINDOW_TOPLEVEL)`.
+  - Window properties are set:
+    - Title: `"Brickout Tutorial"`.
+    - Window position is set to the center of the screen.
+    - Default size of 640x480 pixels.
+    - The window type is set as a utility to give an appropriate hint to the window manager.
+  - A signal handler is connected to the "destroy" event so that when the window is closed, the main GTK loop quits.
+
+- **Creating and Configuring the OpenGL Area (GtkGLArea)**
+  - A `GtkGLArea` widget is created using `gtk_gl_area_new()`.
+  - The widget is configured to expand in both horizontal and vertical directions within the window by using `gtk_widget_set_vexpand` and `gtk_widget_set_hexpand`.
+  - Two important signal callbacks are connected:
+    - **"realize" callback**: Triggered when the GTK GL area is ready to set up the OpenGL context. It calls the `on_realize` function.
+    - **"render" callback**: Triggered when the GL area needs to be rendered, which calls the `on_render` function.
+  - The OpenGL area is added to the window container with `gtk_container_add`.
+
+- **Starting the GTK Main Loop**
+  - `gtk_widget_show_all(window)` displays the window and all its child widgets.
+  - Finally, `gtk_main()` starts the GTK main event loop, waiting for events such as rendering or window actions.
+
+## 2. on_realize: OpenGL Initialization
+
+- **Making the OpenGL Context Current**
+  - `gtk_gl_area_make_current(area)` activates the OpenGL context that is associated with the GtkGLArea widget.
+  - It checks for any OpenGL related errors after making the context current.
+
+- **Retrieving OpenGL Renderer Information**
+  - The code retrieves strings indicating which renderer is used and the supported OpenGL version using `glGetString`.
+  - These details are printed to the console mainly for debugging purposes.
+
+- **Setting a Clear Color**
+  - `glClearColor` is used to set the background color that OpenGL will use when clearing the screen. Here, it is set to white (`1.0f, 1.0f, 1.0f, 1.0f`).
+
+- **Creating a Vertex Array Object (VAO)**
+  - A single VAO is generated and bound. VAOs store the state needed for rendering (like how vertex attributes are stored).
+  
+- **Setting up Triangle Vertex Data**
+  - An array `triangle_vertices` is defined with 2D coordinates for each vertex of a triangle:
+    - Top vertex: `(0.0, 0.8)`
+    - Bottom left: `(-0.8, -0.8)`
+    - Bottom right: `(0.8, -0.8)`
+  - A Vertex Buffer Object (VBO) is generated and bound.
+  - The vertex data is then copied to the GPU memory using `glBufferData`.
+
+- **Configuring Vertex Attributes**
+  - The code specifies how the vertex data is laid out using `glVertexAttribPointer` and initially enables and then disables the vertex attribute array. This configuration will later be re-enabled during rendering.
+
+- **Compiling the Shaders**
+  - **Fragment Shader:**
+    - A source code string is defined to set the output color of the triangle to blue.
+    - The shader is created, its source is loaded, and then it is compiled.
+    - After compilation, it checks if the shader compiled correctly.
+  
+  - **Vertex Shader:**
+    - A source code string is defined that takes input 2D coordinates (attribute `coord2d`) and converts them into a 4D position vector required by the OpenGL pipeline.
+    - Similarly, the vertex shader is created, compiled, and checked for errors.
+  
+- **Linking the Shader Program**
+  - A shader program is created, and both compiled vertex and fragment shaders are attached.
+  - The program is linked, and there is an error check to ensure the linking was successful.
+  
+- **Binding the Vertex Attribute**
+  - The attribute location for `coord2d` in the shader program is obtained using `glGetAttribLocation`.
+  - If this attribute is not found (`-1`), an error is reported.
+
+## 3. on_render: Drawing the Triangle
+
+- **Clearing the Screen**
+  - The `glClear` function is called with `GL_COLOR_BUFFER_BIT` and `GL_DEPTH_BUFFER_BIT` to clear all previous frame data. This results in a clean white background as set earlier.
+
+- **Activating the Shader Program**
+  - `glUseProgram(program)` tells OpenGL to use the previously linked shader program for subsequent drawing operations.
+
+- **Binding the Vertex Data**
+  - The previously generated VAO is bound.
+  - The vertex attribute array for the triangle coordinates is enabled using the attribute location (`attribute_coord2d`) that was obtained earlier.
+  - The VBO with the triangle's vertex data is re-bound and its vertex pointer is defined again using `glVertexAttribPointer`.
+
+- **Rendering the Triangle**
+  - `glDrawArrays` with the argument `GL_TRIANGLES` is called, which instructs OpenGL to draw triangles using the vertex data. Here, it draws one triangle made of 3 vertices.
+  - After drawing, the vertex attribute array is disabled.
+
+## 4. Compilation and Execution
+
+- The code is compiled using GCC along with the necessary flags for GTK+ and linking with `-lepoxy` (a library that aids with function pointer management for OpenGL):
+  - Example command:  
+    gcc `pkg-config --cflags gtk+-3.0` main.c `pkg-config --libs gtk+-3.0` -lepoxy
+- The compiled program is then executed (e.g., `./a.out`), which opens the window and displays the triangle.
+
+# Conclusion
+
+This code is a simple introduction to using GTK and OpenGL together. It initializes a GTK window with an OpenGL drawing area, sets up a basic OpenGL environment with a white background, configures a blue triangle using vertex and fragment shaders, and finally renders the triangle on the screen within the GTK application lifecycle.
+////////////////////////////////////////////////////
+/*
+ * Summary:
+ * This program, written in C, creates a GTK window with an embedded OpenGL area
+ * using GtkGLArea. It initializes an OpenGL context, sets up a simple triangle
+ * using a vertex buffer and vertex array objects, and compiles both vertex and
+ * fragment shaders. The vertex shader passes 2D coordinates to the pipeline,
+ * while the fragment shader colors the triangle blue. The application renders
+ * the blue triangle on a white background. This code is part of the Brickout
+ * Tutorial from DashGL.com.
+ */
+/*
+ *  This file is part of DashGL.com - Gtk - Brickout Tutorial
+ *  Copyright (C) 2017 Benjamin Collins - MIT License
+ */
+#include <epoxy/gl.h>
+#include <epoxy/glx.h>
+#include <gtk/gtk.h>
+static void on_realize(GtkGLArea *area);
+static void on_render(GtkGLArea *area, GdkGLContext *context);
+GLuint program;
+GLuint vao, vbo_triangle;
+GLint attribute_coord2d;
+int main(int argc, char *argv[]) {
+	GtkWidget *window;
+	GtkWidget *glArea;
+	
+	gtk_init(&argc, &argv);
+	
+	// Initialize Window
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title(GTK_WINDOW(window), "Brickout Tutorial");
+	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	gtk_window_set_default_size(GTK_WINDOW(window), 640, 480);
+	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_UTILITY);
+	g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	
+	// Initialize GTK GL Area
+	glArea = gtk_gl_area_new();
+	gtk_widget_set_vexpand(glArea, TRUE);
+	gtk_widget_set_hexpand(glArea, TRUE);
+	g_signal_connect(glArea, "realize", G_CALLBACK(on_realize), NULL);
+	g_signal_connect(glArea, "render", G_CALLBACK(on_render), NULL);
+	gtk_container_add(GTK_CONTAINER(window), glArea);
+	
+	// Show widgets
+	gtk_widget_show_all(window);
+	gtk_main();
+	
+	return 0;
+}
+static void on_realize(GtkGLArea *area) {
+	// Debug Message
+	g_print("on realize\n");
+	
+	gtk_gl_area_make_current(area);
+	if(gtk_gl_area_get_error(area) != NULL) {
+		fprintf(stderr, "Unknown error\n");
+		return;
+	}
+	
+	const GLubyte *renderer = glGetString(GL_RENDER);
+	const GLubyte *version = glGetString(GL_VERSION);
+	printf("Renderer: %s\n", renderer);
+	printf("OpenGL version supported %s\n", version);
+	
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+	
+	GLfloat triangle_vertices[] = {
+		 0.0,  0.8,
+		-0.8, -0.8,
+		 0.8, -0.8
+	};
+	
+	glGenBuffers(1, &vbo_triangle);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(triangle_vertices), triangle_vertices, GL_STATIC_DRAW);
+	
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(0);
+	glDisableVertexAttribArray(0);
+	
+	GLint compile_ok = GL_FALSE;
+	GLint link_ok = GL_FALSE;
+	
+	const char *vs_source = 
+	"#version 120\n"
+	"attribute vec2 coord2d; \n"
+	"void main (void) {\n"
+	"	gl_Position = vec4(coord2d, 0.0, 1.0);\n"
+	"}";
+	
+	const char *fs_source =
+	"#version 120\n"
+	"void main (void) {\n"
+	"	gl_FragColor[0] = 0.0;\n"
+	"	gl_FragColor[1] = 0.0;\n"
+	"	gl_FragColor[2] = 1.0;\n"
+	"}";
+	
+	GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fs, 1, &fs_source, NULL);
+	glCompileShader(fs);
+	glGetShaderiv(fs, GL_COMPILE_STATUS, &compile_ok);
+	if(!compile_ok) {
+		fprintf(stderr, "Error in fragment shader\n");
+		return;
+	}
+	
+	GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vs, 1, &vs_source, NULL);
+	glCompileShader(vs);
+	glGetShaderiv(vs, GL_COMPILE_STATUS, &compile_ok);
+	if(!compile_ok) {
+		fprintf(stderr, "Error in vertex shader\n");
+		return;
+	}
+	
+	program = glCreateProgram();
+	glAttachShader(program, vs);
+	glAttachShader(program, fs);
+	glLinkProgram(program);
+	glGetProgramiv(program, GL_LINK_STATUS, &link_ok);
+	if(!link_ok) {
+		fprintf(stderr, "Error when linking program\n");
+		return;
+	}
+	
+	const char *attribute_name = "coord2d";
+	attribute_coord2d = glGetAttribLocation(program, attribute_name);
+	if(attribute_coord2d == -1) {
+		fprintf(stderr, "Could not bind attribute %s\n", attribute_name);
+		return;
+	}
+}
+static void on_render(GtkGLArea *area, GdkGLContext *context) {
+	g_print("on render\n");
+	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glUseProgram(program);
+	
+	glBindVertexArray(vao);
+	glEnableVertexAttribArray(attribute_coord2d);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
+	glVertexAttribPointer(
+		attribute_coord2d,
+		2,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		0
+	);
+	
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDisableVertexAttribArray(attribute_coord2d);
+}
+/////////////////////////////////////////////////////////////
+I'll help you debug the main.c file in your GTK application for OpenGL rendering, focusing on the `on_realize` and `on_render` functions. Let's analyze the code and add debugging statements to track the OpenGL context initialization and rendering process.
+
+Here's how we can modify the code to add debugging:
+
+1. First, let's add debugging to the on_realize function:
+
+```c
+||| /home/aikidance/DashGL-GTK-Brickout-Tutorial/02_Draw_a_Triangle/main.c | 55:0-149:1 |||
+static void on_realize(GtkGLArea *area) {
+
+    // Debug Message
+    g_print("\n=== OpenGL Context Initialization ===\n");
+    g_print("Starting on_realize...\n");
+
+    gtk_gl_area_make_current(area);
+    if(gtk_gl_area_get_error(area) != NULL) {
+        fprintf(stderr, "Failed to make context current: %s\n", 
+                gtk_gl_area_get_error(area)->message);
+        return;
+    }
+    g_print("OpenGL context made current successfully\n");
+
+    const GLubyte *renderer = glGetString(GL_RENDER);
+    const GLubyte *version = glGetString(GL_VERSION);
+
+    g_print("Renderer: %s\n", renderer);
+    g_print("OpenGL version supported: %s\n", version);
+
+    // Debug VAO creation
+    g_print("\nInitializing vertex objects...\n");
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    g_print("VAO created and bound: %u\n", vao);
+
+    GLfloat triangle_vertices[] = {
+         0.0,  0.8,
+        -0.8, -0.8,
+         0.8, -0.8
+    };
+    
+    // Debug VBO creation
+    glGenBuffers(1, &vbo_triangle);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
+    glBufferData(
+        GL_ARRAY_BUFFER,
+        sizeof(triangle_vertices),
+        triangle_vertices,
+        GL_STATIC_DRAW
+    );
+    g_print("VBO created and data loaded: %u\n", vbo_triangle);
+
+    // Debug vertex attributes
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+    glDisableVertexAttribArray(0);
+    g_print("Vertex attributes configured\n");
+
+    // Debug shader compilation
+    g_print("\nCompiling shaders...\n");
+    GLint compile_ok = GL_FALSE;
+    GLint link_ok = GL_FALSE;
+
+    const char *vs_source = 
+    "#version 120\n"
+    "attribute vec2 coord2d; \n"
+    "void main (void) {\n"
+    "   gl_Position = vec4(coord2d, 0.0, 1.0);\n"
+    "}";
+
+    const char *fs_source =
+    "#version 120\n"
+    "void main (void) {\n"
+    "   gl_FragColor[0] = 0.0;\n"
+    "   gl_FragColor[1] = 0.0;\n"
+    "   gl_FragColor[2] = 1.0;\n"
+    "}";
+
+    GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fs, 1, &fs_source, NULL);
+    glCompileShader(fs);
+    glGetShaderiv(fs, GL_COMPILE_STATUS, &compile_ok);
+    if(!compile_ok) {
+        g_print("Error in fragment shader compilation\n");
+        GLchar log[2048];
+        glGetShaderInfoLog(fs, 2048, NULL, log);
+        g_print("Shader log: %s\n", log);
+        return;
+    }
+    g_print("Fragment shader compiled successfully\n");
+
+    GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vs, 1, &vs_source, NULL);
+    glCompileShader(vs);
+    glGetShaderiv(vs, GL_COMPILE_STATUS, &compile_ok);
+    if(!compile_ok) {
+        g_print("Error in vertex shader compilation\n");
+        GLchar log[2048];
+        glGetShaderInfoLog(vs, 2048, NULL, log);
+        g_print("Shader log: %s\n", log);
+        return;
+    }
+    g_print("Vertex shader compiled successfully\n");
+
+    program = glCreateProgram();
+    glAttachShader(program, vs);
+    glAttachShader(program, fs);
+    glLinkProgram(program);
+    glGetProgramiv(program, GL_LINK_STATUS, &link_ok);
+    if(!link_ok) {
+        g_print("Error when linking program\n");
+        GLchar log[2048];
+        glGetProgramInfoLog(program, 2048, NULL, log);
+        g_print("Program log: %s\n", log);
+        return;
+    }
+    g_print("Shader program linked successfully\n");
+
+    const char *attribute_name = "coord2d";
+    attribute_coord2d = glGetAttribLocation(program, attribute_name);
+    if(attribute_coord2d == -1) {
+        g_print("Could not bind attribute %s\n", attribute_name);
+        return;
+    }
+    g_print("Attribute location bound: %d\n", attribute_coord2d);
+    
+    g_print("=== OpenGL Initialization Complete ===\n\n");
+}
+```
+
+2. Now let's add debugging to the on_render function:
+
+```c
+||| /home/aikidance/DashGL-GTK-Brickout-Tutorial/02_Draw_a_Triangle/main.c | 174:0-199:1 |||
+static void on_render(GtkGLArea *area, GdkGLContext *context) {
+
+    g_print("\n=== Render Frame ===\n");
+    
+    // Clear buffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    g_print("Cleared color and depth buffers\n");
+
+    // Use shader program
+    glUseProgram(program);
+    g_print("Using shader program: %u\n", program);
+
+    // Bind VAO and enable attributes
+    glBindVertexArray(vao);
+    glEnableVertexAttribArray(attribute_coord2d);
+    g_print("VAO bound and attributes enabled\n");
+
+    // Bind VBO and set attributes
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle);
+    glVertexAttribPointer(
+        attribute_coord2d,
+        2,
+        GL_FLOAT,
+        GL_FALSE,
+        0,
+        0
+    );
+    g_print("VBO bound and vertex attributes configured\n");
+
+    // Draw triangle
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    g_print("Drew triangle with 3 vertices\n");
+    
+    // Cleanup
+    glDisableVertexAttribArray(attribute_coord2d);
+    g_print("Disabled vertex attributes\n");
+    
+    // Check for errors
+    GLenum err = glGetError();
+    if (err != GL_NO_ERROR) {
+        g_print("OpenGL error: 0x%04x\n", err);
+    }
+    
+    g_print("=== Frame Complete ===\n\n");
+}
+```
+
+To use this debugging version:
+
+1. Replace the existing `on_realize` and `on_render` functions with these versions
+
+2. Compile with debugging symbols:
+```bash
+gcc -Wall -g `pkg-config --cflags gtk+-3.0` main.c `pkg-config --libs gtk+-3.0` -lepoxy
+```
+
+3. Run the program:
+```bash
+./a.out
+```
+
+The debug output will show:
+- OpenGL context initialization details
+- Shader compilation and linking status
+- Buffer object creation and binding
+- Render frame execution steps
+- Any OpenGL errors that occur
+
+This will help identify where any issues might be occurring in the OpenGL initialization or rendering pipeline. The debug messages will print to stdout, and any errors will print to stderr.
+
+Key areas to watch for:
+1. Context creation success/failure
+2. Shader compilation and linking errors
+3. Buffer object creation and binding
+4. Attribute location binding
+5. OpenGL errors during rendering
+
+Let me know if you see any specific errors in the debug output and I can help diagnose them further.
+///////////////////////////////////////////////

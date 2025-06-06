@@ -212,3 +212,131 @@ And then run our program with:
 ```
 $ ./a.out
 ```
+
+```
+BITO
+GTK (GIMP Toolkit) is an open-source, cross-platform widget toolkit primarily used for developing graphical user interfaces (GUIs). It provides a set of tools for creating windows, buttons, text boxes, and other interface components, making it easier for developers to build feature-rich desktop applications. Initially developed for the GNU Image Manipulation Program (GIMP), GTK has grown popular for creating applications on Linux and other systems, and it supports multiple programming languages through various bindings.
+
+//////////////////////////////////////////////////////////////////////////////
+
+GTK API is a robust set of functions and tools for creating graphical user interfaces (GUIs). Here’s a brief overview:
+
+- **Widget Toolkit:** Provides a range of customizable widgets (buttons, labels, text boxes, etc.) that developers use to build complex interfaces.
+- **Event-Driven Programming:** Uses a signal and callback system where application behavior is defined by responding to user events (clicks, key presses, etc.).
+- **Cross-Platform:** Although originally designed for Linux, GTK supports multiple operating systems such as Windows and macOS.
+- **Language Bindings:** Primarily written in C, GTK offers bindings for various programming languages (like Python, C++, and JavaScript), allowing broader use.
+- **Theming and Accessibility:** Supports theming for customizing interface appearances and includes accessibility features to ensure applications are usable by everyone.
+
+In summary, the GTK API is designed to simplify the process of building powerful, interactive GUIs across different platforms.
+
+///////////////////////////////////////////////////////////////////////////////
+
+# Code Summary
+
+This code creates a GTK window with an area for OpenGL rendering. In that area, it sets up a simple OpenGL scene to draw a blue triangle on a white background. This involves initializing GTK and an OpenGL context, creating the necessary vertex data (a single triangle), compiling shaders (vertex and fragment shaders), and finally rendering the triangle when required.
+
+# Step-by-Step Explanation
+
+## 1. Main Function Setup
+
+- **GTK Initialization and Window Creation**
+  - The program starts by calling `gtk_init(&argc, &argv)` to initialize the GTK library.
+  - A new window is created using `gtk_window_new(GTK_WINDOW_TOPLEVEL)`.
+  - Window properties are set:
+    - Title: `"Brickout Tutorial"`.
+    - Window position is set to the center of the screen.
+    - Default size of 640x480 pixels.
+    - The window type is set as a utility to give an appropriate hint to the window manager.
+  - A signal handler is connected to the "destroy" event so that when the window is closed, the main GTK loop quits.
+
+- **Creating and Configuring the OpenGL Area (GtkGLArea)**
+  - A `GtkGLArea` widget is created using `gtk_gl_area_new()`.
+  - The widget is configured to expand in both horizontal and vertical directions within the window by using `gtk_widget_set_vexpand` and `gtk_widget_set_hexpand`.
+  - Two important signal callbacks are connected:
+    - **"realize" callback**: Triggered when the GTK GL area is ready to set up the OpenGL context. It calls the `on_realize` function.
+    - **"render" callback**: Triggered when the GL area needs to be rendered, which calls the `on_render` function.
+  - The OpenGL area is added to the window container with `gtk_container_add`.
+
+- **Starting the GTK Main Loop**
+  - `gtk_widget_show_all(window)` displays the window and all its child widgets.
+  - Finally, `gtk_main()` starts the GTK main event loop, waiting for events such as rendering or window actions.
+
+## 2. on_realize: OpenGL Initialization
+
+- **Making the OpenGL Context Current**
+  - `gtk_gl_area_make_current(area)` activates the OpenGL context that is associated with the GtkGLArea widget.
+  - It checks for any OpenGL related errors after making the context current.
+
+- **Retrieving OpenGL Renderer Information**
+  - The code retrieves strings indicating which renderer is used and the supported OpenGL version using `glGetString`.
+  - These details are printed to the console mainly for debugging purposes.
+
+- **Setting a Clear Color**
+  - `glClearColor` is used to set the background color that OpenGL will use when clearing the screen. Here, it is set to white (`1.0f, 1.0f, 1.0f, 1.0f`).
+
+- **Creating a Vertex Array Object (VAO)**
+  - A single VAO is generated and bound. VAOs store the state needed for rendering (like how vertex attributes are stored).
+  
+- **Setting up Triangle Vertex Data**
+  - An array `triangle_vertices` is defined with 2D coordinates for each vertex of a triangle:
+    - Top vertex: `(0.0, 0.8)`
+    - Bottom left: `(-0.8, -0.8)`
+    - Bottom right: `(0.8, -0.8)`
+  - A Vertex Buffer Object (VBO) is generated and bound.
+  - The vertex data is then copied to the GPU memory using `glBufferData`.
+
+- **Configuring Vertex Attributes**
+  - The code specifies how the vertex data is laid out using `glVertexAttribPointer` and initially enables and then disables the vertex attribute array. This configuration will later be re-enabled during rendering.
+
+- **Compiling the Shaders**
+  - **Fragment Shader:**
+    - A source code string is defined to set the output color of the triangle to blue.
+    - The shader is created, its source is loaded, and then it is compiled.
+    - After compilation, it checks if the shader compiled correctly.
+  
+  - **Vertex Shader:**
+    - A source code string is defined that takes input 2D coordinates (attribute `coord2d`) and converts them into a 4D position vector required by the OpenGL pipeline.
+    - Similarly, the vertex shader is created, compiled, and checked for errors.
+  
+- **Linking the Shader Program**
+  - A shader program is created, and both compiled vertex and fragment shaders are attached.
+  - The program is linked, and there is an error check to ensure the linking was successful.
+  
+- **Binding the Vertex Attribute**
+  - The attribute location for `coord2d` in the shader program is obtained using `glGetAttribLocation`.
+  - If this attribute is not found (`-1`), an error is reported.
+
+## 3. on_render: Drawing the Triangle
+
+- **Clearing the Screen**
+  - The `glClear` function is called with `GL_COLOR_BUFFER_BIT` and `GL_DEPTH_BUFFER_BIT` to clear all previous frame data. This results in a clean white background as set earlier.
+
+- **Activating the Shader Program**
+  - `glUseProgram(program)` tells OpenGL to use the previously linked shader program for subsequent drawing operations.
+
+- **Binding the Vertex Data**
+  - The previously generated VAO is bound.
+  - The vertex attribute array for the triangle coordinates is enabled using the attribute location (`attribute_coord2d`) that was obtained earlier.
+  - The VBO with the triangle's vertex data is re-bound and its vertex pointer is defined again using `glVertexAttribPointer`.
+
+- **Rendering the Triangle**
+  - `glDrawArrays` with the argument `GL_TRIANGLES` is called, which instructs OpenGL to draw triangles using the vertex data. Here, it draws one triangle made of 3 vertices.
+  - After drawing, the vertex attribute array is disabled.
+
+## 4. Compilation and Execution
+
+- The code is compiled using GCC along with the necessary flags for GTK+ and linking with `-lepoxy` (a library that aids with function pointer management for OpenGL):
+  - Example command:  
+    gcc `pkg-config --cflags gtk+-3.0` main.c `pkg-config --libs gtk+-3.0` -lepoxy
+- The compiled program is then executed (e.g., `./a.out`), which opens the window and displays the triangle.
+
+# Conclusion
+
+This code is a simple introduction to using GTK and OpenGL together. It initializes a GTK window with an OpenGL drawing area, sets up a basic OpenGL environment with a white background, configures a blue triangle using vertex and fragment shaders, and finally renders the triangle on the screen within the GTK application lifecycle.
+
+
+akl(it's me) 
+gcc -Wall -g `pkg-config --cflags gtk+-3.0` main.c `pkg-config --libs gtk+-3.0` -lepoxy
+
+
+```
