@@ -1,0 +1,103 @@
+gcc -c -o DashGL/dashgl.o DashGL/dashgl.c -lepoxy -lpng -lm
+
+
+Below is a breakdown of the command:
+
+gcc
+This is the GNU Compiler Collection's command for compiling C (and other languages). In this case, it's invoked to compile a C source file.
+
+
+-c
+The -c flag tells the compiler to compile the source file into an object file but not to carry out the linking process. This means the output will not be an executable yet but an intermediate object file (commonly with an “.o” extension).
+
+
+-o DashGL/dashgl.o
+The -o flag is used to specify the name (and location) of the output file. Here, it directs gcc to place the resulting object file in the DashGL directory with the name dashgl.o.
+
+
+DashGL/dashgl.c
+This is the path to the source file that will be compiled. Again, it's located inside the DashGL directory and its name is dashgl.c.
+
+
+-lepoxy -lpng -lm
+These flags are typically used for linking libraries:  
+
+
+-lepoxy tells the linker to link against the Epoxy library, which is often used for managing OpenGL function pointers.  
+-lpng tells the linker to link with the libpng library, which is used for handling PNG image files.  
+-lm links against the math library, providing common mathematical functions.
+
+Note:
+Since the -c flag instructs gcc to compile without linking, the library options (-lepoxy -lpng -lm) do not affect the compilation phase. They would usually be used during the linking phase (for example, when compiling without the -c flag) to resolve symbols defined in those libraries. In this specific command, adding them while only compiling to an object file has no adverse effect, but they aren’t necessary in this step. They might be included as part of a standardized build command for later linking.
+
+In summary, this command compiles the C source file DashGL/dashgl.c into an object file DashGL/dashgl.o without linking, while listing the libraries required for the eventual linking process.
+
+///////////////////////////////////////////////////////////////////////////////
+
+gcc `pkg-config --cflags gtk+-3.0` main.c DashGL/dashgl.o `pkg-config --libs gtk+-3.0` -lepoxy -lm -lpng
+
+
+I'll explain the gcc command using pkg-config for GTK+ 3.0 flags in compiling main.c and linking DashGL/dashgl.o with libraries -lepoxy, -lm, and -lpng.
+
+Looking at the Makefiles across different directories, we can see a consistent pattern for compilation. Let's break down the command:
+
+bash
+
+
+gcc -c -o DashGL/dashgl.o DashGL/dashgl.c -lepoxy -lpng -lm
+gcc `pkg-config --cflags gtk+-3.0` main.c DashGL/dashgl.o `pkg-config --libs gtk+-3.0` -lepoxy -lm -lpng
+Let's analyze each part:
+
+First Command (Compiling dashgl.c):
+bash
+
+
+gcc -c -o DashGL/dashgl.o DashGL/dashgl.c -lepoxy -lpng -lm
+-c: Compile only, don't link
+-o DashGL/dashgl.o: Output file name
+DashGL/dashgl.c: Source file
+-lepoxy: Link with epoxy library for OpenGL function loading
+-lpng: Link with PNG library for image handling
+-lm: Link with math library
+Second Command (Compiling and Linking main.c):
+bash
+
+
+gcc `pkg-config --cflags gtk+-3.0` main.c DashGL/dashgl.o `pkg-config --libs gtk+-3.0` -lepoxy -lm -lpng
+Breaking down the components:
+
+pkg-config --cflags gtk+-3.0: Gets compiler flags for GTK+ 3.0
+
+
+Typically includes: -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 etc.
+
+main.c: Main source file
+
+
+DashGL/dashgl.o: Previously compiled object file
+
+
+pkg-config --libs gtk+-3.0: Gets linker flags for GTK+ 3.0
+
+
+Typically includes: -lgtk-3 -lgdk-3 -lpangocairo-1.0 etc.
+
+Additional libraries:
+
+
+-lepoxy: OpenGL function loading
+-lm: Math library
+-lpng: PNG image support
+
+The command ensures:
+
+All required GTK+ 3.0 headers are found during compilation
+All necessary GTK+ 3.0 libraries are linked
+Additional required libraries (epoxy, math, png) are linked
+The custom DashGL library object file is included in the final executable
+This compilation approach:
+
+Uses pkg-config to handle GTK+ dependencies automatically
+Links all required external libraries
+Combines the custom DashGL library with the main program
+Creates a final executable with all dependencies resolved
